@@ -1,7 +1,8 @@
 import os
-import pandas as pd
 import shutil
 from collections import defaultdict
+
+import pandas as pd
 
 # ======================
 # 路径（你改这里）
@@ -10,6 +11,7 @@ LISA_PATH = r"D:\Paper_yolo\datasets_raw\lisa"
 OUTPUT_PATH = r"D:\Paper_yolo\datasets_raw\lisa_yolo"
 
 CSV_PATH = os.path.join(LISA_PATH, "Annotations", "Annotations")
+
 
 # 类别映射
 def map_class(name):
@@ -21,6 +23,7 @@ def map_class(name):
         return 2  # yellow
     else:
         return None
+
 
 # 创建目录
 for split in ["train"]:
@@ -76,6 +79,7 @@ for csv_file in csv_files:
 
         # 获取尺寸（用PIL）
         from PIL import Image
+
         img = Image.open(img_path)
         w, h = img.size
 
