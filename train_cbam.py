@@ -1,14 +1,11 @@
 from ultralytics import YOLO
 from ultralytics.utils import SETTINGS
+
 from models.common import CBAMModule  # 确保 common.py 中定义了 CBAMModule
-import torch
-import time
 
 
 def replace_layer_with_cbam(model, target_index):
-    """
-    将模型中的第 target_index 层替换为 CBAMModule
-    自动获取该层的输入通道数
+    """将模型中的第 target_index 层替换为 CBAMModule 自动获取该层的输入通道数.
     """
     # 获取内部的 nn.Sequential 列表
     net = model.model.model  # Ultralytics 模型的结构
@@ -18,9 +15,9 @@ def replace_layer_with_cbam(model, target_index):
 
     original_layer = net[target_index]
     # 尝试获取输入通道数（针对 Conv 或 C3 等常见层）
-    if hasattr(original_layer, 'conv') and hasattr(original_layer.conv, 'in_channels'):
+    if hasattr(original_layer, "conv") and hasattr(original_layer.conv, "in_channels"):
         in_channels = original_layer.conv.in_channels
-    elif hasattr(original_layer, 'cv1') and hasattr(original_layer.cv1, 'conv'):
+    elif hasattr(original_layer, "cv1") and hasattr(original_layer.cv1, "conv"):
         in_channels = original_layer.cv1.conv.in_channels
     else:
         # 如果无法自动获取，请根据打印信息手动指定
@@ -43,7 +40,9 @@ def main():
     print("🔧 正在配置训练参数...")
 
     # 1. 加载原始模型（不使用自定义 yaml）
-    model = YOLO(r"D:\Paper_yolo\yolov5-master\runs\CBAM\CBAM_Exp\weights\last.pt") #model = YOLO('yolov5n.yaml')  # 原始模型配置文件
+    model = YOLO(
+        r"D:\Paper_yolo\yolov5-master\runs\CBAM\CBAM_Exp\weights\last.pt"
+    )  # model = YOLO('yolov5n.yaml')  # 原始模型配置文件
 
     # 2. 打印模型结构，帮助选择要替换的层
     print("\n模型各层类型索引：")
@@ -62,19 +61,19 @@ def main():
 
     # 5. 训练参数配置（与原脚本一致）
     results = model.train(
-        data='../datasets_small/data.yaml',
-        project=r'D:\Paper_yolo\yolov5-master\runs\CBAM',
-        name='CBAM_Exp',
+        data="../datasets_small/data.yaml",
+        project=r"D:\Paper_yolo\yolov5-master\runs\CBAM",
+        name="CBAM_Exp",
         device=0,
         workers=2,
         epochs=100,
         resume=True,  # 第一次训练必须为 False
         batch=8,
-        cache='disk',
+        cache="disk",
         imgsz=640,
         amp=True,
         pretrained=True,
-        optimizer='SGD',
+        optimizer="SGD",
         lr0=0.01,
         lrf=0.01,
         cos_lr=True,
@@ -96,12 +95,12 @@ def main():
         patience=50,
         close_mosaic=20,
         save_period=1,
-        plots=True
+        plots=True,
     )
 
     print("\n✨ 训练完成！")
     print("模型保存路径：", results.save_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
