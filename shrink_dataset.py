@@ -1,7 +1,7 @@
-import os
 import random
 import shutil
 from pathlib import Path
+
 import cv2
 
 # ===========================
@@ -10,20 +10,19 @@ import cv2
 DATASET_ROOT = r"../datasets_final"
 OUTPUT_ROOT = r"../datasets_small"
 
-KEEP_RATIO = 0.4        # 保留比例
-MIN_BOXES = 1           # 至少目标数
-IMG_SIZE = 512          # 统一尺寸
-SEED = 42               # 保证可复现
+KEEP_RATIO = 0.4  # 保留比例
+MIN_BOXES = 1  # 至少目标数
+IMG_SIZE = 512  # 统一尺寸
+SEED = 42  # 保证可复现
+
 
 # ===========================
 # 🚀 工具函数：计算质量分数
 # ===========================
 def score_image(label_path):
+    """简单质量评分： - 目标数量（越多越高）.
     """
-    简单质量评分：
-    - 目标数量（越多越高）
-    """
-    with open(label_path, "r") as f:
+    with open(label_path) as f:
         lines = f.readlines()
 
     num_boxes = len(lines)
@@ -32,6 +31,7 @@ def score_image(label_path):
         return -1
 
     return num_boxes  # 可以后续扩展（如面积/清晰度）
+
 
 # ===========================
 # 🚀 主逻辑
