@@ -48,7 +48,6 @@ from models.common import (
     GhostBottleneck,
     GhostConv,
     Proto,
-    CBAM,
 )
 from models.experimental import MixConv2d
 from utils.autoanchor import check_anchor_order

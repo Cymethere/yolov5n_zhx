@@ -1,7 +1,5 @@
-from pyexpat import model
 from ultralytics import YOLO
 from ultralytics.utils import SETTINGS
-import time
 
 
 def main():
@@ -33,82 +31,67 @@ def main():
     # ==================================================
     results = model.train(
         # ---------------- 数据集路径 ----------------
-        data='../datasets_small/data.yaml',   # 数据集配置文件
-
+        data="../datasets_small/data.yaml",  # 数据集配置文件
         # ---------------- 输出路径 ----------------
-        project=r'D:\Paper_yolo\yolov5-master\runs\teacher',              # 训练结果总目录
-        name='Teacher_yolov5l',              # 当前实验名称（子文件夹）
-
+        project=r"D:\Paper_yolo\yolov5-master\runs\teacher",  # 训练结果总目录
+        name="Teacher_yolov5l",  # 当前实验名称（子文件夹）
         # ---------------- 设备设置 ----------------
-        device=0,       # 使用第0张GPU
-        workers=2,      # 数据加载线程数
-
+        device=0,  # 使用第0张GPU
+        workers=2,  # 数据加载线程数
         # ---------------- 训练轮数 ----------------
-        epochs=100,     # 总训练轮数（目标100轮）
-
+        epochs=100,  # 总训练轮数（目标100轮）
         # ⭐⭐⭐ 断点续训核心参数 ⭐⭐⭐
         # resume=True 的含义：
         # → 自动检测 runs/teacher/Teacher_yolov5l/last.pt
         # → 从 last.pt 的 epoch 继续训练
         # ⚠️ 前提：必须存在 last.pt
         resume=True,
-
         # ---------------- batch & 输入 ----------------
-        batch=8,        # 每批训练图片数
-        cache='disk',   # 使用磁盘缓存（加速训练）
-        imgsz=640,      # 输入图片尺寸（注意：与你 shrink_dataset.py 不强制绑定）
-
+        batch=8,  # 每批训练图片数
+        cache="disk",  # 使用磁盘缓存（加速训练）
+        imgsz=640,  # 输入图片尺寸（注意：与你 shrink_dataset.py 不强制绑定）
         # ---------------- 混合精度 ----------------
-        amp=True,       # 开启AMP（省显存 + 加速）
-
+        amp=True,  # 开启AMP（省显存 + 加速）
         # ---------------- 预训练 ----------------
         pretrained=True,
-
         # ==================================================
         # 5. 优化器 & 学习率策略
         # ==================================================
-        optimizer='SGD',
-        lr0=0.01,       # 初始学习率
-        lrf=0.01,       # 最终学习率比例
-        cos_lr=True,    # 余弦退火学习率
+        optimizer="SGD",
+        lr0=0.01,  # 初始学习率
+        lrf=0.01,  # 最终学习率比例
+        cos_lr=True,  # 余弦退火学习率
         warmup_epochs=5.0,  # warmup预热轮数
-
         # ==================================================
         # 6. Loss权重（影响训练收敛）
         # ==================================================
-        box=7.5,   # bbox回归损失权重
-        cls=0.5,   # 分类损失权重
-        dfl=1.5,   # 分布焦点损失
-
+        box=7.5,  # bbox回归损失权重
+        cls=0.5,  # 分类损失权重
+        dfl=1.5,  # 分布焦点损失
         # ==================================================
         # 7. 数据增强（提升泛化能力）
         # ==================================================
-        hsv_h=0.015,   # 色调扰动
-        hsv_s=0.7,     # 饱和度扰动
-        hsv_v=0.4,     # 明度扰动
-
-        degrees=0.0,       # 旋转
-        translate=0.1,     # 平移
-        scale=0.5,         # 缩放
-        shear=0.0,         # 剪切
-        perspective=0.0,   # 透视变化
-
-        fliplr=0.5,        # 左右翻转概率
-        mosaic=1.0,        # Mosaic增强
-        mixup=0.1,         # MixUp增强
-
+        hsv_h=0.015,  # 色调扰动
+        hsv_s=0.7,  # 饱和度扰动
+        hsv_v=0.4,  # 明度扰动
+        degrees=0.0,  # 旋转
+        translate=0.1,  # 平移
+        scale=0.5,  # 缩放
+        shear=0.0,  # 剪切
+        perspective=0.0,  # 透视变化
+        fliplr=0.5,  # 左右翻转概率
+        mosaic=1.0,  # Mosaic增强
+        mixup=0.1,  # MixUp增强
         # ==================================================
         # 8. 训练控制策略
         # ==================================================
-        patience=50,       # 早停机制（50轮无提升则停止）
-        close_mosaic=20,   # 最后20轮关闭mosaic（稳定收敛）
-
+        patience=50,  # 早停机制（50轮无提升则停止）
+        close_mosaic=20,  # 最后20轮关闭mosaic（稳定收敛）
         # ⭐⭐⭐ 断点恢复关键 ⭐⭐⭐
         # 每1轮保存一次模型
         # 否则 resume 很容易丢 epoch
         save_period=1,
-
-        plots=True         # 保存训练曲线图
+        plots=True,  # 保存训练曲线图
     )
 
     # ==================================================
@@ -118,5 +101,5 @@ def main():
     print("模型保存路径：", results.save_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

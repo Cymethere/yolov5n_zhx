@@ -1116,11 +1116,7 @@ class CBAMModule(nn.Module):
         super().__init__()
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.max_pool = nn.AdaptiveMaxPool2d(1)
-        self.mlp = nn.Sequential(
-            nn.Conv2d(c, c // 16, 1, bias=False),
-            nn.ReLU(),
-            nn.Conv2d(c // 16, c, 1, bias=False)
-        )
+        self.mlp = nn.Sequential(nn.Conv2d(c, c // 16, 1, bias=False), nn.ReLU(), nn.Conv2d(c // 16, c, 1, bias=False))
         self.sigmoid_channel = nn.Sigmoid()
         self.spatial = nn.Conv2d(2, 1, 7, padding=3, bias=False)
         self.sigmoid_spatial = nn.Sigmoid()
