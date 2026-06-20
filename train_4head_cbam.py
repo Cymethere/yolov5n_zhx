@@ -1,14 +1,11 @@
 from ultralytics import YOLO
 from ultralytics.utils import SETTINGS
-from models.common import CBAMModule, Conv, C3, Concat, Detect
-import torch
-import torch.nn as nn
+
+from models.common import CBAMModule
 
 
 def add_p2_head_and_cbam(model, nc=3):
-    """
-    动态为 YOLOv5n 添加 P2 检测头，并将第5层 Conv 替换为 CBAM
-    """
+    """动态为 YOLOv5n 添加 P2 检测头，并将第5层 Conv 替换为 CBAM."""
     net = model.model.model  # 原始 Sequential 列表
 
     # 1. 先替换 CBAM（与之前一样）
@@ -29,9 +26,8 @@ def add_p2_head_and_cbam(model, nc=3):
     # 但更方便：我们构建新的 P2 分支，其输入来自 backbone 的 P2（索引2）和 head 的 P3（索引13）。
 
     # 先备份原 head 部分（从第10层开始到结束）
-    old_head = net[10:]
+    net[10:]
     # 新层列表
-    new_layers = []
 
     # 构建 P2 头所需的层（参考官方 yolov5n-p2.yaml）
     # 步骤：从 P3/8 特征（索引13）上采样并与 P2/4 特征（索引2）拼接，然后通过 C3 模块
@@ -58,7 +54,7 @@ def add_p2_head_and_cbam(model, nc=3):
     # 首先，定义 P2 头所需的层序列（基于官方的 head 部分，但只取前几个新层）
 
     # 获取 backbone 部分（前10层）
-    backbone = net[:10]
+    net[:10]
     # 从官方 P2 配置中提取 head 的层定义（见下面的列表）
     # 注意：这些层的参数需要根据实际通道数调整，我们假设和官方一致。
     # 官方的 head 定义（从 backbone 之后开始）：
@@ -90,7 +86,7 @@ def add_p2_head_and_cbam(model, nc=3):
 def replace_layer_with_cbam(model, target_index):
     net = model.model.model
     original_layer = net[target_index]
-    if hasattr(original_layer, 'conv') and hasattr(original_layer.conv, 'in_channels'):
+    if hasattr(original_layer, "conv") and hasattr(original_layer.conv, "in_channels"):
         in_channels = original_layer.conv.in_channels
     else:
         in_channels = 64
@@ -106,7 +102,7 @@ def main():
     SETTINGS["tensorboard"] = True
 
     # 加载原始模型
-    model = YOLO('yolov5n.yaml')
+    model = YOLO("yolov5n.yaml")
 
     # 打印结构
     print("\n模型各层类型索引：")
@@ -122,18 +118,18 @@ def main():
 
     # 训练
     results = model.train(
-        data='../datasets_small/data.yaml',
-        project=r'D:\Paper_yolo\yolov5-master\runs\4head_CBAM',
-        name='exp',
+        data="../datasets_small/data.yaml",
+        project=r"D:\Paper_yolo\yolov5-master\runs\4head_CBAM",
+        name="exp",
         device=0,
         workers=2,
         epochs=100,
         batch=8,
         imgsz=640,
-        cache='disk',
+        cache="disk",
         amp=True,
         pretrained=True,
-        optimizer='SGD',
+        optimizer="SGD",
         lr0=0.01,
         lrf=0.01,
         cos_lr=True,
@@ -155,12 +151,12 @@ def main():
         patience=50,
         close_mosaic=20,
         save_period=1,
-        plots=True
+        plots=True,
     )
 
     print("\n✨ 训练完成！")
     print("模型保存路径：", results.save_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
